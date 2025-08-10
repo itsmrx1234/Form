@@ -1,0 +1,24 @@
+{
+  "name": "forms",
+  "version": "1.0.0",
+  "description": "Forms application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsmrx1234/Form.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/itsmrx1234/Form/issues"
+  },
+  "homepage": "https://github.com/itsmrx1234/Form#readme",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
