@@ -10,39 +10,31 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const navigate = useNavigate()
 
+  const navigate = useNavigate();
+  const { refreshAuth, loggedIn } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState('');
-  const { setUsername, setLoggedIn, loggedIn } = useContext(AuthContext);
 
-  const onSubmit = (data) => {
-    axios
-      .post('http://localhost:3000/user/login', data,{
-        withCredentials:true
-      })
-      .then((res) => {
-        console.log('Login response:', res);
-        setLoggedIn(true);
-        setUsername(data.username); // Or res.data.username if your API returns it
-        setErrorMessage('');
-      })
-      .catch((err) => {
-        console.error('Login error:', err);
-        if (err.response && err.response.data && err.response.data.message) {
-          setErrorMessage(err.response.data.message);
-        } else {
-          setErrorMessage('Something went wrong. Please try again.');
-        }
-      });
+  const onSubmit = async (data) => {
+    try {
+      await axios.post('http://localhost:3000/user/login', data, { withCredentials: true });
+      setErrorMessage('');
+      await refreshAuth();
+      navigate('/');
+    } catch (err) {
+      console.error('Login error:', err);
+      setErrorMessage(err.response?.data?.message || 'Something went wrong. Please try again.');
+    }
   };
-  useEffect(()=>{
-    if(loggedIn)
-      navigate('/')
-  }, [loggedIn, setLoggedIn])
+
+  useEffect(() => {
+    if (loggedIn) navigate('/');
+  }, [loggedIn, navigate]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 relative">
-      {/* Soft Overlay */}
-      <div className="absolute inset-0 bg-black/20 z-0"></div>
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/20"></div>
 
       {/* Form */}
       <form
@@ -58,11 +50,12 @@ const Login = () => {
           />
         </div>
 
-        <h2 className="text-3xl font-extrabold text-center text-amber-500 animate-fade-in-up">
+        {/* Title */}
+        <h2 className="text-3xl font-extrabold text-center text-amber-500">
           Welcome Back
         </h2>
 
-        {/* Username Field */}
+        {/* Username */}
         <div className="flex flex-col gap-1">
           <label htmlFor="username" className="text-sm font-semibold text-gray-700">
             Username
@@ -80,7 +73,7 @@ const Login = () => {
           )}
         </div>
 
-        {/* Password Field */}
+        {/* Password */}
         <div className="flex flex-col gap-1">
           <label htmlFor="password" className="text-sm font-semibold text-gray-700">
             Password
@@ -97,7 +90,7 @@ const Login = () => {
           )}
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
           className="bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 rounded-md transition duration-300 shadow-md"
@@ -105,32 +98,21 @@ const Login = () => {
           Submit
         </button>
 
-        {/* Error Message */}
+        {/* Sign up link */}
+        <div
+          className="text-center text-sm text-blue-600 hover:underline cursor-pointer"
+          onClick={() => navigate('/signin')}
+        >
+          Don't have an account? Create One
+        </div>
+
+        {/* Error */}
         {errorMessage && (
           <div className="text-sm text-red-600 text-center bg-red-100 p-2 rounded-md">
             {errorMessage}
           </div>
         )}
       </form>
-
-      {/* Tailwind Custom Animation */}
-      <style>
-        {`
-          @keyframes fadeInUp {
-            from {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
-          }
-        `}
-      </style>
     </div>
   );
 };
