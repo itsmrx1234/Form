@@ -1,5 +1,4 @@
 
-```markdown
 # Senator
 
 A secure, scalable, full-stack authentication system built with React, Node.js, Express, and MongoDB. This project delivers user signup, login, JWT-based authentication, cookie management, and role-based protected routes with a clean, modular codebase.
