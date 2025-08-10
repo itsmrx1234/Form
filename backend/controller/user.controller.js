@@ -1,5 +1,7 @@
 import User from '../models/user.model.js'
 import bcrypt from 'bcrypt'
+import jwt from "jsonwebtoken"
+const JWT_SECRET = process.env.JWT_SECRET
 export const createUser = (req, res)=>{
     const {username, password} = req.body;
     const newUser = new User({username, password})
@@ -31,6 +33,18 @@ export const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(404).send({ message: "Username or password is incorrect" });
         }
+        //create JWT
+        const token = jwt.sign(
+            {id:user._id, username:user.username},
+            JWT_SECRET,
+            {expiresIn:"1h"}
+        )
+        res.cookie("token", token, {
+            httpOnly: false, 
+            secure: true,   
+            sameSite: "none",
+            maxAge: 60 * 60 * 1000
+        });
 
         return res.status(200).send({ message: "Successfully logged in" });
     } catch (err) {
