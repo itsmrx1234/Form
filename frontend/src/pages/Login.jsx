@@ -17,7 +17,9 @@ const Login = () => {
 
   const onSubmit = (data) => {
     axios
-      .post('http://localhost:3000/user/login', data)
+      .post('http://localhost:3000/user/login', data,{
+        withCredentials:true
+      })
       .then((res) => {
         console.log('Login response:', res);
         setLoggedIn(true);
